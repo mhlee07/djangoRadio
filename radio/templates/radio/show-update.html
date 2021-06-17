@@ -1,0 +1,31 @@
+{% extends 'radio/base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Update Show{% endblock %}
+
+{% block body %}
+
+{% if user.is_authenticated %}
+
+    {% if user.id == show.artist.id %}
+        <div class="border border-4" style="width: 700px; margin: auto; padding:20px; background-color: white;">
+            <form action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token  %}
+                <fieldset class="form-group">
+                    <legend class="border-bottom border-4">Update Show</legend>
+                        {{ form | crispy }}
+                </fieldset>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-outline-success">Update</button>
+                </div>
+            </form>
+        </div>
+    {% else %}
+        <h1>404 Page Not Found</h1>
+    {% endif %}
+
+{% else %}
+    <h1>You are not logged in...</h1>
+{% endif %}
+
+{% endblock %}
+

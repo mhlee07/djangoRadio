@@ -1,0 +1,92 @@
+{% extends 'radio/base.html' %}
+{% block title %}Show Detail{% endblock %}
+
+{% block body %}
+
+<div class="container" style="margin: 30px auto;">
+	<div style="margin-bottom: 50px;">
+		<div style="float: left;">
+			<img src="{{ show.show_logo.url }}" style="width:150px; height:110px;">
+		</div>
+		<div style="margin-left: 180px">
+			<h2>{{ show.show_name }} - 
+				{{ show.artist.first_name }}
+				{{ show.artist.last_name }}
+			</h2>
+			<h5>{{ show.category | title }}</h5>
+		</div>
+	</div>
+	
+	{% if user.is_authenticated %}
+		{% if user.id == show.artist.id %}
+		<div>
+			<button type="button" class="btn btn-secondary btn-md" style="float: right;">
+				<a href="{% url 'radio:audio-add' show.id %}" style="text-decoration: none; color: white;">
+					<span class="fas fa-plus" aria-hidden="true"></span>&nbsp;
+					Add Audio
+				</a>
+			</button>
+		</div>
+		{% endif %}
+	{% endif %}
+
+	<table class="table table-striped table-hover">
+	  <thead class="table-light">
+		<tr>
+		  <th scope="col" style="width: 5%;">Play</th>
+		  <th scope="col" style="width: 15%;">Subject</th>
+		  <th scope="col" style="width: 40%;">Description</th>
+		  <th scope="col" style="width: 10%;">Post Date</th>
+		  <th scope="col" style="width: 10%;">Favorite</th>
+		  <th scope="col" style="width: 5%;">Action</th>
+		</tr>
+	  </thead>
+	  <tbody>
+		{% for audio in show.audios.all %}
+		<tr>
+			<th scope="row">
+				<a href="#" class="btn btn-outline-success">
+					<span class="fas fa-play"></span>
+				</a>
+			</th>
+			<td>{{ audio.file_title }}</td>
+			<td>{{ audio.description }}</td>
+			<td>{{ audio.post_date }}</td>
+			<td>
+				<!-- Favorite audio -->
+				{% if user.is_authenticated %}
+					<form action="{% url 'radio:audio-favorite' audio.id %}" method="post" style="display: inline">
+						{% csrf_token %}
+						<input type="hidden" name="audio_id" value="{{ audio.id }}" />
+						<button type="submit" class="btn btn-light btn-sm">
+							{% if request.user in audio.favorite.all %}
+								<span class="fas fa-star"></span>
+                            {% else %}
+								<span class="far fa-star"></span>
+                            {% endif %}
+							<span class="badge rounded-pill bg-secondary">{{ audio.total_favorite }} Likes</span>
+						</button>
+					</form>
+				{% endif %}
+			</td>
+			<td>
+				<!-- Delete audio -->
+				{% if user.is_authenticated %}
+					<form action="{% url 'radio:audio-delete' show.id audio.id %}" method="POST" style="display: inline;">
+						{% csrf_token %}
+						<input type="hidden" name="audio_id" value="{{ audio.id }}" />
+						<button type="submit" class="btn btn-light">
+							<span class="fas fa-trash"></span>
+						</button>
+					</form>
+				{% endif %}
+			</td>
+		</tr>
+		{% endfor %}
+
+	  </tbody>
+	</table>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'radio/base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Register{% endblock %}
+
+{% block body %}
+
+<div class="border border-4" style="width: 700px; margin: auto; padding:20px; background-color: white;">
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token  %}
+            <fieldset class="form-group">
+                <legend class="border-bottom border-4">Register</legend>
+                    {{ form | crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button type="submit" class="btn btn-outline-success">Register</button>
+            </div>
+    </form>
+</div>
+
+{% endblock %}
+

@@ -1,0 +1,26 @@
+{% extends 'radio/base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Add Audio{% endblock %}
+
+
+{% block body %}
+
+{% if user.is_authenticated %}
+    <div class="border border-4" style="width: 700px; margin: auto; padding:20px; background-color: white;">
+        <form method="POST">
+            {% csrf_token  %}
+            <fieldset class="form-group">
+                <legend class="border-bottom border-4">Add a New Audio</legend>
+                    {{ form | crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button type="submit" class="btn btn-outline-success">Add</button>
+            </div>
+        </form>
+    </div>
+{% else %}
+    <h1>You are not logged in...</h1>
+{% endif %}
+
+{% endblock %}
+

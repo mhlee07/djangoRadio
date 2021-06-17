@@ -1,0 +1,66 @@
+{% extends 'radio/base.html' %}
+{% block title %}Category{% endblock %}
+
+{% block body %}
+
+<h1 style="text-align: center; margin-top: 20px;">
+    {{ category_name | title }}
+</h1>
+
+<div class="d-flex align-content-start flex-wrap justify-content-center">
+
+    {% for show in show_list %}
+        <div style="width: 320px; margin: 20px 10px;">
+
+            <!-- Show logo -->
+            <a href="{% url 'radio:detail' show.id %}">
+                <img src="{{ show.show_logo.url }}" class="card-img-top">
+            </a>
+
+            <div style="float: left; margin-top: 10px;">
+                <h5 class="card-title">{{ show.show_name }}</h5>
+                <p class="card-text">{{ show.artist.first_name }}
+                    {{ show.artist.last_name }}</p>
+            
+                <!-- Details -->
+                <button type="button" class="btn btn-success">
+                    <a href="{% url 'radio:detail' show.id %}" style="text-decoration: none; color: white;">View Detail</a>
+                </button>
+
+                {% if user.is_authenticated %}
+                    {% if user.id == show.artist.id %}
+                        <!-- Update show -->
+                        <a href="{% url 'radio:show-update' show.id %}" class="btn btn-light">
+                            <span class="fas fa-edit"></span>
+                        </a>
+                        <!-- Delete show -->
+                        <form action="{% url 'radio:show-delete' show.id %}" method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="show_id" value="{{ show.id }}" />
+                            <button type="submit" class="btn btn-light">
+                                <span class="fas fa-trash"></span>
+                            </button>
+                        </form>
+                    {% endif %}
+
+                    <!-- Favorite show -->
+                    <form action="{% url 'radio:show-favorite' show.id %}" method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="show" value="{{ show.id }}" />
+                        <button type="submit" class="btn btn-light">
+                            {% if request.user in show.favorite.all %}
+                                <span class="fas fa-heart"></span>
+                            {% else %}
+                                <span class="far fa-heart"></span>
+                            {% endif %}
+                            <span class="badge rounded-pill bg-secondary">{{ show.total_favorite }}</span>
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+
+        </div>
+    {% endfor %}
+</div>
+
+{% endblock %}
